@@ -1,0 +1,5 @@
+${date} ${your-summary-here}
+    ; summary: ${summary}
+    ; purpose: ${purpose}
+    ; payer: ${payer}
+    ${your-account-here}              ${amount} ${currency}
