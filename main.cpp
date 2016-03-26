@@ -1,6 +1,8 @@
 #include "argument_parser.hpp"
 #include "banking_arguments.hpp"
 #include "csv.hpp"
+#include "templates.hpp"
+#include "readline.hpp"
 #include <string>
 #include <time.h>
 #include <unordered_map>
@@ -49,55 +51,21 @@ banking_item parse_item(
       find_exceptionally_csv(l,ba.column_currency)};
 }
 
-typedef
-std::unordered_map<std::string,std::string>
-replacement_map;
-
-std::string
-read_file_to_string(std::string const &filename) {
-  std::ifstream t(filename);
-  if(!t)
-    throw std::runtime_error("cannot open “"+filename+"”");
-  return std::string(std::istreambuf_iterator<char>(t),std::istreambuf_iterator<char>());
-}
-
-std::string replace_all_substrings(
-				   std::string subject,
-				   std::string const &search,
-				   std::string const &replace) {
-  size_t pos{0};
-  while ((pos = subject.find(search, pos)) != std::string::npos) {
-    subject.replace(pos, search.length(), replace);
-    pos += replace.length();
-  }
-  return subject;
-}
-  
-std::string
-replace_template_file(
-		      std::string const &filename,
-		      replacement_map const &replacements) {
-  std::string result{read_file_to_string(filename)};
-  for(auto replacement : replacements) {
-    result = replace_all_substrings(result,"${"+replacement.first+"}",replacement.second);
-  }
-  return result;
-}
 
 void process_item(
   banking_item const &bi,
   std::string const &template_file,
   std::ofstream &) {
-  std::cout << replace_template_file(
+  std::cout << mt940::replace_template_file(
 			template_file,
-			replacement_map{
+			mt940::replacement_map{
 			  {"date",bi.date},
 			    {"summary",bi.summary},
 			      {"payer",bi.payer},
 				{"amount",bi.amount},
 				  {"currency",bi.currency},
 			  {"purpose",bi.purpose}}) << "\n";
-  
+  std::string const input_line(mt940::readline("purpose ["+bi.purpose+"] "));
   /*
   std::cout << bi.date << " $purpose\n";
   std::cout << "    ; summary: " << bi.summary << "\n";
