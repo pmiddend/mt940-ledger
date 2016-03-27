@@ -65,7 +65,8 @@ void process_item(
 				{"amount",bi.amount},
 				  {"currency",bi.currency},
 			  {"purpose",bi.purpose}}) << "\n";
-  std::string const input_line(mt940::readline("purpose ["+bi.purpose+"] "));
+  std::string const purpose(mt940::readline("purpose ["+bi.purpose+"] "));
+  std::string const account(mt940::readline("account? "));
   /*
   std::cout << bi.date << " $purpose\n";
   std::cout << "    ; summary: " << bi.summary << "\n";
