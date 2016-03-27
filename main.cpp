@@ -13,6 +13,23 @@
 #include <fstream>
 
 namespace {
+std::string
+parse_swift_string(std::string const &s) {
+  if(s.length() <= 27)
+    return s;
+  std::string::size_type const purpose_index{s.find("SVWZ+")};
+  std::string::size_type const purpose_start{purpose_index+5};
+  if(purpose_index == std::string::npos)
+    return s;
+  std::string::size_type const next_plus{s.find("+",purpose_index+5u)};
+  if(next_plus == std::string::npos)
+    return s.substr(purpose_start);
+  std::string::size_type const purpose_end{s.rfind(" ",next_plus)};
+  if(purpose_end == std::string::npos)
+    return s.substr(purpose_start);
+  return s.substr(purpose_start,purpose_end - purpose_start);
+}
+
 struct banking_item {
   std::string const date;
   std::string const summary;
@@ -45,7 +62,7 @@ banking_item parse_item(
 	find_exceptionally_csv(l,ba.column_date),
 	ba.date_format),
       find_exceptionally_csv(l,ba.column_summary),
-      find_exceptionally_csv(l,ba.column_purpose),
+      parse_swift_string(find_exceptionally_csv(l,ba.column_purpose)),
       find_exceptionally_csv(l,ba.column_payer),
       find_exceptionally_csv(l,ba.column_amount),
       find_exceptionally_csv(l,ba.column_currency)};
