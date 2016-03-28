@@ -1,0 +1,88 @@
+* mt940-ledger
+mt940 is a small program to /interactively/ process a file stored in *MT940 CSV* format (which is exported by at least one large German bank) and store the results in [[http://ledger-cli.org/][ledger]] format.
+** Dependencies
+mt940-ledger only depends on the *readline* library, *make* and a recent *C++11 compiler* (gcc-4.9 or clang). On /Ubuntu/, you can install the package =libreadline-dev= and =build-essential= and you should be good to go.
+** Build
+To build mt940-ledger, simply clone the repository, switch to it and execute =make=. The executable produced will be called =mt940-ledger=. If your compiler is clang, use =make CC=/usr/bin/clang++= to build. Currently, there is no =install= target available, and the Makefile isn't set up with proper care (pull requests welcome).
+** Usage
+*** Example
+mt940-ledger has a lot of command line parameters, all of them are mandatory (because I was too lazy to implement optional command line options). Let's see what a sample call looks like and what it does. Let's say you have the following sample mt940-csv file (called =sample.csv=):
+
+#+BEGIN_SRC csv
+"Target account";"Booking date";"Value date";"Posting text";"Purpose";"Payer";"Account number";"BIC";"Amount";"Currency"
+"133731338";"29.01.16";"29.01.16";"Music for you";"SVWZ+Spotify";"Friend of mine";"DE423424295235";"INGFOOBAR";"-7,00";"EUR"
+...
+#+END_SRC
+
+In the shell, we enter the following
+
+#+BEGIN_EXAMPLE
+./mt940-ledger            \
+  --separator=\;          \
+  --skip-header=true      \
+  --date-format=%d.%m.%y  \
+  --column-date=1         \
+  --column-summary=3      \
+  --column-purpose=4      \
+  --column-payer=5        \
+  --column-amount=8       \
+  --column-currency=9     \
+  --template-file=tem.txt \
+  sample.csv              \
+  /tmp/output.dat
+#+END_EXAMPLE
+
+As you can see, there's a =template-file= argument. Each entry in the csv file is mapped to this template, inserting the appropriate placeholders. =tem.txt= looks like this:
+
+#+BEGIN_EXAMPLE
+${date} ${purpose}
+    ; summary: ${summary}
+    ; purpose: ${purpose}
+    ; payer: ${payer}
+    ${account}              ${amount} ${currency}
+    Assets:Main
+#+END_EXAMPLE
+
+The output of the call above is the following:
+
+#+BEGIN_EXAMPLE
+2016/01/29 Spotify
+    ; summary: Music for you
+    ; purpose: Spotify
+    ; payer: Friend of mine
+    ${account}              -7,00 EUR
+    Assets:Main
+
+enter “s” to skip the entry, ctrl+d to exit
+purpose [Spotify] 
+#+END_EXAMPLE
+
+Now we enter the purpose or press return to use "Spotify" as our purpose (which is fine). Then we are prompted for the target account (for example =Expenses:Leisure:Music=) and then =/tmp/output.dat= gets a new entry:
+
+#+BEGIN_EXAMPLE
+2016/01/29 Spotify
+    ; summary: Music for you
+    ; purpose: Spotify
+    ; payer: Friend of mine
+    Expenses:Leisure:Music              -7,00 EUR
+    Assets:Main
+#+END_EXAMPLE
+*** Command line parameters
+The following parameters exist (columns start with index zero, boolean values are =yes/no,0/1,true/false=):
+
+| Parameter       | Description                                        |
+|-----------------+----------------------------------------------------|
+| =template-file=   | See above example                                  |
+| =separator=       | CSV separator                                      |
+| =skip-header=     | Skip the first line of the CSV file                |
+| =date-format=     | CSV date format to parse via strptime              |
+| =column-date=     | Column for the date                                |
+| =column-summary=  | Column for the summary (negative if not present)   |
+| =column-purpose=  | SWIFT column for purpose (negative if not present) |
+| =column-payer=    | Column for the payer (negative if not present)     |
+| =column-amount=   | Column for the amount                              |
+| =column-currency= | Column for the currency                            |
+
+SWIFT columns follow the SWIFT coding. If your CSV file has a column with funny strings in it like =SVWZ+= or =+EREF=, it's SWIFT. Use =column-purpose= on it. mt940-ledger will parse the "real" purpose from it.
+
+There are two positional arguments (ones without a =--foo== parameter in front of them). The first one is the input CSV file, the second one the output file. There is no magic =-= constant meaning =stdout=.

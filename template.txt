@@ -1,5 +1,6 @@
-${date} ${your-summary-here}
+${date} ${purpose}
     ; summary: ${summary}
     ; purpose: ${purpose}
     ; payer: ${payer}
-    ${your-account-here}              ${amount} ${currency}
+    ${account}              ${amount} ${currency}
+    Assets:Main

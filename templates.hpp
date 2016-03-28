@@ -4,6 +4,10 @@
 #include <unordered_map>
 #include <string>
 
+/*
+ * Tools for the template files containing placeholders like
+ * ${foo}.
+ */
 namespace mt940 {
 typedef
 std::unordered_map<std::string,std::string>
@@ -16,7 +20,7 @@ std::string replace_all_substrings(
 				   std::string subject,
 				   std::string const &search,
 				   std::string const &replace);
-  
+
 std::string
 replace_template_file(
 		      std::string const &filename,

@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 
+/*
+ * Very simple CSV parser supporting optional quoting but no newlines in fields
+ */
 namespace mt940 {
 typedef
 std::vector<std::string>

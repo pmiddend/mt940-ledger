@@ -3,6 +3,9 @@
 
 #include <string>
 
+/*
+ * Structure containing all command line parameterswith proper types
+ */
 namespace mt940 {
 struct banking_arguments {
   std::string const input_file;
@@ -12,9 +15,9 @@ struct banking_arguments {
   bool const skip_header;
   std::string const date_format;
   unsigned const column_date;
-  unsigned const column_summary;
-  unsigned const column_purpose;
-  unsigned const column_payer;
+  int const column_summary;
+  int const column_purpose;
+  int const column_payer;
   unsigned const column_amount;
   unsigned const column_currency;
 };
