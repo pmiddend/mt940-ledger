@@ -10,6 +10,18 @@ char parse_char_arg(
   return arg[0];
 }
 
+int parse_signed_arg(
+  std::string const &arg) {
+  try {
+    int const r{std::stoi(arg)};
+    return r;
+  } catch (std::invalid_argument const &e) {
+      throw std::runtime_error("invalid unsigned argument “"+arg+"” (invalid argument)");
+  } catch (std::out_of_range const &e) {
+      throw std::runtime_error("invalid unsigned argument “"+arg+"” (out of range)");
+  }
+}
+
 unsigned parse_unsigned_arg(
   std::string const &arg) {
   try {
@@ -47,9 +59,9 @@ mt940::banking_arguments mt940::parse_banking_arguments(char *argv[],int const a
       parse_bool_arg(find_exceptionally(parsed_args.argument_map,"skip-header")),
       find_exceptionally(parsed_args.argument_map,"date-format"),
       parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-date")),
-      parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-summary")),
-      parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-purpose")),
-      parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-payer")),
+      parse_signed_arg(find_exceptionally(parsed_args.argument_map,"column-summary")),
+      parse_signed_arg(find_exceptionally(parsed_args.argument_map,"column-purpose")),
+      parse_signed_arg(find_exceptionally(parsed_args.argument_map,"column-payer")),
       parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-amount")),
       parse_unsigned_arg(find_exceptionally(parsed_args.argument_map,"column-currency"))};
 }
