@@ -1,4 +1,7 @@
 * mt940-ledger
+
+[[https://travis-ci.org/pmiddend/mt940-ledger.svg?branch=master][https://travis-ci.org/pmiddend/mt940-ledger.svg?branch=master]]
+
 mt940 is a small program to /interactively/ process a file stored in *MT940 CSV* format (which is exported by at least one large German bank) and store the results in [[http://ledger-cli.org/][ledger]] format.
 ** Dependencies
 mt940-ledger only depends on the *readline* library, *make* and a recent *C++11 compiler* (gcc-4.9 or clang). On /Ubuntu/, you can install the package =libreadline-dev= and =build-essential= and you should be good to go.
