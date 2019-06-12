@@ -4,6 +4,8 @@ mt940 is a small program to /interactively/ process a file stored in *MT940 CSV*
 mt940-ledger only depends on the *readline* library, *make* and a recent *C++11 compiler* (gcc-4.9 or clang). On /Ubuntu/, you can install the package =libreadline-dev= and =build-essential= and you should be good to go.
 ** Build
 To build mt940-ledger, simply clone the repository, switch to it and execute =make=. The executable produced will be called =mt940-ledger=. If your compiler is clang, use =make CC=/usr/bin/clang++= to build. Currently, there is no =install= target available, and the Makefile isn't set up with proper care (pull requests welcome).
+
+If you’re using [[https://nixos.org][the Nix package manager]], just run =nix-build= and you can execute the program via =result/bin/mt940-ledger=.
 ** Usage
 *** Example
 mt940-ledger has a lot of command line parameters, all of them are mandatory (because I was too lazy to implement optional command line options). Let's see what a sample call looks like and what it does. Let's say you have the following sample mt940-csv file (called =sample.csv=):
