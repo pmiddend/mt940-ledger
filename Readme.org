@@ -1,5 +1,7 @@
 * mt940-ledger
 
+*This repo has moved to codeberg*: [[https://codeberg.org/pmiddend/mt940-ledger][new URL]].
+
 [[https://travis-ci.org/pmiddend/mt940-ledger.svg?branch=master][https://travis-ci.org/pmiddend/mt940-ledger.svg?branch=master]]
 
 mt940 is a small program to /interactively/ process a file stored in *MT940 CSV* format (which is exported by at least one large German bank) and store the results in [[http://ledger-cli.org/][ledger]] format.
